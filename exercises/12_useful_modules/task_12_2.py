@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+
 """
 Задание 12.2
 
 
-Функция ping_ip_addresses из задания 12.1 принимает только список адресов,
+Функция ping_ipes из задания 12.1 принимает только список адресов,
 но было бы удобно иметь возможность указывать адреса с помощью диапазона,
 например, 192.168.100.1-10.
 
@@ -34,3 +35,20 @@
  '172.21.41.129', '172.21.41.130', '172.21.41.131', '172.21.41.132']
 
 """
+def convert_ranges_to_ip_list(ip_add):
+    list_ip = []
+    for ip in ip_add:
+        if "-" in ip:
+            start_ip, end_ip = ip.split("-")
+            main_part = ".".join(start_ip.split('.')[:-1])
+            if "." in end_ip:
+                end_ip = end_ip.split(".")[-1]
+            start_ip = start_ip.split(".")[-1]
+            for ip in range(int(start_ip), int(end_ip) + 1):
+                list_ip.append(main_part + f".{ip}")
+        else:
+            list_ip.append(ip)
+    return list_ip
+
+if __name__ == "__main__":
+    print(convert_ranges_to_ip_list(['8.8.4.4', '1.1.1.1-3', '172.21.41.128-172.21.41.132']))
