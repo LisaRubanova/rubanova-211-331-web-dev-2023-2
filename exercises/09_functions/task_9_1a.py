@@ -22,7 +22,8 @@ port-security и без.
 
 Пример вызова функции:
 print(generate_access_config(access_config, access_mode_template))
-print(generate_access_config(access_config, access_mode_template, port_security_template))
+print(generate_access_config(access_config,
+      access_mode_template, port_security_template))
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
@@ -43,3 +44,28 @@ port_security_template = [
 ]
 
 access_config = {"FastEthernet0/12": 10, "FastEthernet0/14": 11, "FastEthernet0/16": 17}
+
+def generate_access_config(intf_vlan_mapping, access_template, port_security = None):
+    # print (intf_vlan_mapping)
+    # print (access_template)
+
+    res = []
+    for intf, vlan in intf_vlan_mapping.items():
+        res.append(intf)
+        for comm in access_template:
+            if comm.endswith('access vlan'):
+                res.append(f"{comm}, {vlan}")
+            else:
+                res.append(f"{comm}")
+        if port_security:
+            # *.extend(port_security) Дополняет список элементами из port_security
+            res.extend(port_security) 
+    return res
+
+
+
+print(generate_access_config(access_config, access_mode_template))
+print("")
+print(generate_access_config(access_config, access_mode_template, port_security_template))
+
+
