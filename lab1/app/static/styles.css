@@ -1,0 +1,18 @@
+body {
+    font-size: 1.25rem;
+}
+
+.avatar {
+    max-width: 100%;
+}
+
+.post_photo {
+    max-width: 75%;
+    max-height: 70%;
+}
+
+.avatar_comment {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 50px;
+}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!--Заголовок и подписи-->
+<div class="row">
+    <h1 class="my-5">Заголовок поста</h1>
+    <p>{{ post.author }}, {{ post.date.strftime('%d.%m.%Y') }}</p>
+</div>
+<!--Фото-->
+<div class="row d-flex justify-content-center">
+    <img class="post_photo" src="{{ url_for('static', filename='images/' + post.image_id) }}" alt="Card image cap">
+</div>
+<!--Описание-->
+<div class="row my-5">
+    <div class="d-flex text-align-justify" >
+        {{ post.text }}
+    </div>
+</div>
+
+<!--Поле комментария-->
+<div class="row">
+    <form>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Оставьте коментарий</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+<!--Комментарии-->
+<div class="row">
+    <div>
+        {% for comment in post.comments %}
+        <div class="d-flex mt-5 shadow p-3 mb-5 bg-white rounded">
+            <div class="flex-shrink-0">
+                <img class="avatar_comment" src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="Author">
+            </div>
+            <div class="flex-grow-1 me-3">
+                <h5>{{comment.author}}</h5>
+                <p>{{comment.text}}</p>
+            </div>
+            
+        </div>
+        {% for reply in comment.replies %}
+        <div class="d-flex ms-5">
+            <div class="flex-shrink-0">
+                <img class="avatar_comment" src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="Author">
+            </div>
+            <div class="flex-grow-1 me-3">
+                <h5>{{reply.author}}</h5>
+                <p>{{reply.text}}</p>
+            </div>
+            
+        </div>
+        {% endfor %}
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+    <p class="text-center">Рубанова Елизавета Романовна 211-331</p>
+{% endblock %}
