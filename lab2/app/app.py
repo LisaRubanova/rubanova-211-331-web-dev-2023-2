@@ -89,6 +89,4 @@ def phone_number():
                 error_text = 'Недопустимый ввод. Неверное количество цифр.'
                 
     return render_template('phone_number.html', m = m, error_text = error_text, error = error)
-# +7 (123) 456-75-90
-# 8(123)4567590
-# 123.456.75.90
+

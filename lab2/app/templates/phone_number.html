@@ -4,8 +4,12 @@
 <form method="POST">
     <div class="col-4 mb-3">
         <label class="form-label" for="number">Номер для проверки</label>
-        <input class="form-control {% if error and m%} is-invalid {% elif m and not error%} is-valid {%else%} {% endif %}" type="text" name="number"
-            id="number" value="{{request.form.number}}">
+        <input class="form-control 
+            {% if error and m%} is-invalid 
+            {% elif m and not error%} is-valid 
+            {%else%} 
+            {% endif %}" 
+            type="text" name="number" id="number" value="{{request.form.number}}">
             
         {% if request.method == 'POST' %}
         <div class="{% if error %} invalid-feedback {% endif %}">{{error_text}}</div>
@@ -14,7 +18,9 @@
     <button class="btn btn-primary">Проверить</button>
 </form>
 
-
+<p>+7 (123) 456-75-90</p>
+<p>8(123)4567590</p>
+<p>123.456.75.90</p>
 
 
 {% endblock %}
