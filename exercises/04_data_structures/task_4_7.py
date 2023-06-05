@@ -18,7 +18,6 @@
 mac = "AAAA:BBBB:CCCC"
 
 temp = mac.split(':')
-print(temp)
 new = "".join(temp)
-print(new)
-print(bin(int(new, 16)))
+
+print(bin(int(new, 16))[2:])

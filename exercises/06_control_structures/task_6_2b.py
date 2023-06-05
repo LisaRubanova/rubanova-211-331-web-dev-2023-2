@@ -16,18 +16,20 @@
 flag = False
 
 while not flag:
-    flag = True
-    ip = input('Enter ip: ')
-    octets = ip.split('.')
-    if len(octets) != 4:
+   flag = True
+   ip = input('Enter ip: ')
+   octets = ip.split('.')
+   if len(octets) != 4:
         flag = False
 
-    for octet in octets:
-        if not (octet.isdigit() and int(octet) >= 0 and int(octet) <= 255):
-            flag = False
+   for octet in octets:
+      if not (octet.isdigit() and int(octet) >= 0 and int(octet) <= 255):
+         flag = False
 
-if not(flag):
-   print('Неправильный IP-адрес')
+   if not(flag):
+      print('Неправильный IP-адрес')
+      break
+   
 else:
    f_ip = int(octets[0])
    if f_ip <= 223 and f_ip > 0:

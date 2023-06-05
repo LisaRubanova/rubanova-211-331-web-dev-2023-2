@@ -32,5 +32,5 @@ ip_parts = ip.split('.')
 print(('{:11}{:11}{:11}{:11}').format(
     ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3]))
 
-print(('{:10} {:10} {:10} {:10}').format(bin(int(ip_parts[0])), bin(
-    int(ip_parts[1])), bin(int(ip_parts[2])), bin(int(ip_parts[3]))))
+print(('{:10} {:10} {:10} {:10}').format(bin(int(ip_parts[0]))[2:].zfill(8), 
+    bin(int(ip_parts[1]))[2:].zfill(8), bin(int(ip_parts[2]))[2:].zfill(8), bin(int(ip_parts[3]))[2:].zfill(8)))

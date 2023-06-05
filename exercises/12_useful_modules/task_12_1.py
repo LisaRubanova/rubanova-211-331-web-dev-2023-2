@@ -25,7 +25,7 @@ def ping_ip_addresses(ip_addresses):
     unreachable = []
 
     for ip in ip_addresses:
-        result = subprocess.run(["ping", ip])
+        result = subprocess.run(["ping", "-c", "3", ip])
         if result.returncode == 0:
             reachable.append(ip)
         else:

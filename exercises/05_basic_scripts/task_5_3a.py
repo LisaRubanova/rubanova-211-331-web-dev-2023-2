@@ -30,13 +30,15 @@ mode = input('Введите режим работы интерфейса (acces
 interface = input('Введите тип и номер интерфейса: ')
 
 question_template = {
-    'access': 'Введите номер VLAN: ',
-    'trunk': 'Введите разрешенные VLANы: '
+    'access': [access_template, "Введите номер VLAN: "],
+    'trunk': [trunk_template, "Введите разрешенные VLANы: "]
 }
 
-temp_vlan = input(question_template[mode])
+temp_vlan = input(question_template[mode][1])
 temp = mode + '_template'
 
 print('\n' + '-' * 30)
 print('interface {}'.format(interface))
-print('\n'.join(template[temp]).format(temp_vlan))
+print('\n'.join(question_template[mode][0]).format(temp_vlan))
+
+
