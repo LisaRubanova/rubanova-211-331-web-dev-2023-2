@@ -76,6 +76,7 @@ def phone_number():
                 break    
         
         only_desimal = filter(str.isdecimal, number)
+        print(only_desimal)
         number = "".join(only_desimal)
         # print(number)
 
@@ -83,7 +84,7 @@ def phone_number():
             if len(number) == 10:
                 error_text = "8-" + number[0:3] + "-" + number[3:6] + "-" + number[6:8] + "-" + number[8:10]
             elif len(number) == 11:
-                error_text = number[0] + "-" + number[1:4] + "-" + number[4:7] + "-" + number[7:9] + "-" + number[9:11]
+                error_text = "8-" + number[1:4] + "-" + number[4:7] + "-" + number[7:9] + "-" + number[9:11]
             else:
                 error = True
                 error_text = 'Недопустимый ввод. Неверное количество цифр.'
