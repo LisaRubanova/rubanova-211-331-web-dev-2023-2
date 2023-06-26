@@ -5,12 +5,16 @@ from app import db
 from users_policy import UsersPolicy
 from functools import wraps
 
+# параметры
+#   1: какой BP
+#   2: имя испольняемого модуля 
+#   3: префикс будет в URL (<домен сайта>/<префикс>/<ВР>)
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def init_login_manager(app):
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Для доступа к этой странице нужно авторизироваться.'
     login_manager.login_message_category = 'warning'
     login_manager.user_loader(load_user)
@@ -49,7 +53,11 @@ def permission_check(action):
                 user = load_user(user_id)
             if not current_user.can(action, user):
                 flash('Недостаточно прав', 'warning')
-                return redirect(url_for('users'))
+
+                if action != 'show_statistics':
+                    return redirect(url_for('users'))
+                else:
+                    return redirect(url_for('visits.logging'))
             return function(*args, **kwargs)
         return wrapper
     return decor
@@ -69,12 +77,8 @@ def login():
 
         query = 'SELECT * FROM users WHERE login = %s and password_hash = SHA2(%s, 256);'
 
-        # 1' or '1' = '1' LIMIT 1#
-        # user'#
-        # query = f"SELECT * FROM users WHERE login = '{login}' and password_hash = SHA2('{password}', 256);"
         with db.connection().cursor(named_tuple=True) as cursor:
             cursor.execute(query, (login, password))
-            # cursor.execute(query)
             print(cursor.statement)
             user = cursor.fetchone()
 

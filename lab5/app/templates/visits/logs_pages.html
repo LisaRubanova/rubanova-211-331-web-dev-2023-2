@@ -9,13 +9,10 @@
                 №
             </th>
             <th>
-                path
+                Страница
             </th>
             <th>
-                login
-            </th>
-            <th>
-                date
+                Количество посещений
             </th>
         </tr>
     </thead>
@@ -29,20 +26,12 @@
                 {{log.path}}
             </td>
             <td>
-                {{log.login or 'Анонимный пользователь'}}
-            </td>
-            <td>
-                {{ log.created_at }}
+                {{log.count}}
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {{ pagination(current_page, last_page, request.endpoint) }}
-{% if current_user.is_authenticated %}
-{% if current_user.can('create') %}
-<a href="{{ url_for('visits.statistic_pages') }}">Отчет по страницам</a>
-<a href="{{ url_for('visits.statistic_users') }}">Отчет по пользователям</a>
-{% endif %}
-{% endif %}
+<a class="btn btn-primary" href="{{ url_for('visits.download_statistic_pages') }}" role="button">Экспорт в CSV</a>
 {% endblock %}

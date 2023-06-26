@@ -3,6 +3,10 @@
 
 {% block content %}
 <h2 class="my-3">Добавление нового пользователя</h2>
-{{ user_form(user, url_for('create_user'), roles_list, current_user) }}
+{{ user_form(user, url_for('create_user'), roles_list, current_user, m,
+output_login, error_login,
+output_pass, error_pass,
+output_f_n, error_f_n,
+output_l_n, error_l_n) }}
 
 {% endblock %}

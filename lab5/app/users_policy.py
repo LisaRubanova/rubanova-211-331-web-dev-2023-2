@@ -19,5 +19,11 @@ class UsersPolicy:
             return True
         return current_user.is_admin()
 
+
+    # возможность просматривать статистику админу
+    def show_statistics(self):
+        return current_user.is_admin()
+    
+	# возможность изменить свою роль может только администратор
     def change_role(self):
         return current_user.is_admin()
