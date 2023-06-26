@@ -1,0 +1,133 @@
+{% macro book_form(url, genres, book, current_user, m, 
+    output_name, error_name,
+    output_desc, error_desc,
+    output_year, error_year,
+    output_publish, error_publish,
+    output_author, error_author,
+    output_pages, error_pages) %}
+<div class="container">
+    <form method="POST" action="{{ url }}" enctype="multipart/form-data">
+
+        <input type="hidden" name="author_id" value="{{ current_user.id }}">
+        <div class="mb-3 row">
+            <div class="col-md-6 d-flex flex-column">
+
+                <div class="mb-3">
+                    <label for="name">Название</label>
+                    <div class="">
+                        
+                        <input class="form-control {% if error_name and m %} is-invalid 
+                            {% elif m and not error_name %} is-valid {% else %} {% endif %}" type="text" name="name"
+                            id="name" value="{{ book.name or '' }}">
+                        {% if request.method == 'POST' %}
+                        <div class="{% if error %} invalid-feedback {% endif %}">{{ output_name }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="genres">Жанры</label>
+                    <div class="checkboxes">
+                        {% for genre in genres %}
+                        <div class="form-check">
+                            <input class="form-check-input check_checkbox" type="checkbox" name="{{ genre.id}}"
+                                value="{{ genre.name }}" id="{{ genre.id }}">
+                            <label class="form-check-label" for="{{ genre.id }}">
+                                {{ genre.name }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mb-3 d-flex flex-column flex-grow-1">
+                    <label for="description">Описание</label>
+                    <div class="">
+                        <textarea class="form-control flex-grow-1 
+                        {% if error_desc and m %} is-invalid 
+                        {% elif m and not error_desc %} is-valid 
+                        {% else %} 
+                        {% endif %}" name="description" id="description" cols="30" rows="5">{{ book.description or '' }}</textarea>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var textarea = document.getElementById('description');
+                                var editor = new EasyMDE({ element: textarea });
+                            }); 
+                        </script>
+                        {% if request.method == 'POST' %}
+                        <div class="{% if error %} invalid-feedback {% endif %}">{{ output_desc }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="year">Год</label>
+                    <div class="">
+                        <input
+                            class="form-control {% if error_year and m %} is-invalid {% elif m and not error_year %} is-valid {% else %} {% endif %}"
+                            type="text" name="year" id="year" value="{{ book.year or '' }}" >
+                        {% if request.method == 'POST' %}
+                        <div class="{% if error %} invalid-feedback {% endif %}">{{ output_year }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="publisher">Издательство</label>
+                    <div class="">
+                        <input
+                            class="form-control {% if error_publish and m %} is-invalid {% elif m and not error_publish %} is-valid {% else %} {% endif %}"
+                            type="text" name="publisher" id="publisher"  value="{{ book.publisher or '' }}">
+                        {% if request.method == 'POST' %}
+                        <div class="{% if error %} invalid-feedback {% endif %}">{{ output_publish }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="author">Автор</label>
+                    <div class="">
+                    <input
+                        class="form-control {% if error_author and m %} is-invalid {% elif m and not error_author %} is-valid {% else %} {% endif %}"
+                        type="text" name="author" id="author" value="{{ book.author or '' }}">
+                        {% if request.method == 'POST' %}
+                        <div class="{% if error %} invalid-feedback {% endif %}">{{ output_author }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="pages">Количество страниц</label>
+                    <div class="">
+                        
+                    <input
+                        class="form-control {% if error_pages and m %} is-invalid {% elif m and not error_pages %} is-valid {% else %} {% endif %}"
+                        type="text" name="pages" id="pages" value="{{ book.pages or '' }}">
+                        {% if request.method == 'POST' %}
+                        <div class="{% if error %} invalid-feedback {% endif %}">{{ output_pages }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 d-flex flex-column">
+            {% if request.endpoint == 'books.create' or request.endpoint == 'books.new' %}
+                <div class="col-md-6 d-flex flex-column">
+                    <div class="mb-3">
+                        <label for="background_img">Фоновое изображение</label>
+                        <input class="form-control" type="file" name="background_img" id="background_img">
+                    </div>
+                    <div class="mb-3 background-preview p-3 rounded d-flex align-items-center justify-content-center">
+                        <img src="#" class="img-fluid d-none" alt="">
+                        <label for="background_img" class="btn btn-dark">Выбрать изображение</label>
+                    </div>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+
+        <div class="mb-3 text-center">
+            <input type="submit" class="btn btn-dark" value="Сохранить">
+        </div>
+    </form>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
+{% endmacro %}

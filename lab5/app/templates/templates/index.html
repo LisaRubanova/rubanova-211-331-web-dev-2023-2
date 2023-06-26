@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% from 'pagination.html' import render_pagination %}
+
+{% block head %}
+{{ super() }}
+<script defer src="{{ url_for('static', filename='users.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+<form action="{{ url_for('books.index') }}" class="row align-items-center mt-3 mx-5">
+    <div class="col-sm-12 mb-3 col-md-3 mb-md-0">
+        <input autocomplete="off" type="text" class="form-control" id="book-name" name="name"
+            placeholder="Название книги" value="{{ request.args.get('name', '') }}">
+    </div>
+    <div class="col-sm-12 mb-3 col-md-3 mb-md-0">
+        <input autocomplete="off" type="text" class="form-control" id="book_author" name="author"
+            placeholder="Автор" value="{{ request.args.get('author', '') }}">
+    </div>
+    <div class="col-sm-12 mb-3 col-md-3 mb-md-0">
+        <input autocomplete="off" type="text" class="form-control" id="book_pages" name="pages"
+            placeholder="Объем от/до" value="{{ request.args.get('pages', '') }}">
+    </div>
+    <div class="col-sm-12 col-md-2 align-self-end">
+        <button type="submit" class="btn btn btn-primary mt-auto">Найти</button>
+    </div>
+
+    <div class="my-3 ">
+        <label for="genres">Жанры</label>
+        <div class="checkboxes d-flex flex-row ">
+            {% for genre in genres %}
+            <div class="form-check mx-5">
+                <input class="form-check-input check_checkbox" type="checkbox" name="{{ genre.id }}" value="{{ genre.name }}" id="{{ genre.id }}">
+                <label class="form-check-label" for="{{ genre.id }}">
+                    {{ genre.name }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div> 
+
+    <div class="mb-3">
+        <label for="genres">Года</label>
+        <div class="checkboxes d-flex flex-row ">
+            {% for year in years %}
+            <div class="form-check mx-5">
+                <input class="form-check-input check_checkbox" type="checkbox" name="{{ year }}" value="{{ year }}" id="{{ year }}">
+                <label class="form-check-label" for="year">
+                    {{ year }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div> 
+
+    
+</form>
+
+<div class="container p-3 mt-3">
+    <table class="table">
+        <thead>
+
+            <tr>
+                <th>
+                    №
+                </th>
+                <th>
+                    <b>Название</b>
+                </th>
+                <th>
+                    <b>Жанры</b>
+                </th>
+                <th>
+                    <b>Год</b>
+                </th>
+                <th>
+                    <b>Средняя оценка пользователей</b>
+                </th>
+                <th>
+                    <b>Количество рецензий</b>
+                </th>
+                <th>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <th>
+                    {{loop.index}}
+                </th>
+                <th id="book_name">
+                    {{book.name}}
+                </th>
+                <th>
+                    {% for genre in book.genres %}
+                    <p>{{genre.name}}</p>
+                    {% endfor %}
+                </th>
+                <th>
+                    {{book.year}}
+                </th>
+                <th>
+                    {{book.rating}}
+                </th>
+                <th>
+                    {{book.reviews}}
+                </th>
+                <th>
+                    <div class="btn-group" role="group">
+                        {% if current_user.is_authenticated and current_user.can('show', user) %}
+                        <a class="btn btn-secondary" href="{{ url_for('books.show', book_id=book.id) }}">Просмотр</a>
+                        {% endif %}
+                        {% if current_user.is_authenticated and current_user.can('edit')%}
+                        <a class="btn btn-primary"
+                            href="{{ url_for('books.edit',  book_id=book.id) }}">Редактировать</a>
+                        {% endif %}
+                        {% if current_user.is_authenticated and current_user.can('delete')%}
+                        <button class="btn btn-danger rounded-end" data-bs-toggle="modal"
+                            data-url="{{ url_for('books.delete',  book_id=book.id) }}"
+                            data-bs-target="#deleteBook">Удалить</button>
+                        {% endif %}
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteBook" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Удаление книги</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Вы уверены, что хотите удалить книгу <span id="bookName"></span>?</p>
+                                        <form class="d-none" action="" method="POST" id="deleteBookForm">
+                                            <input type="submit" id="deleteBookButton">
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Отмена</button>
+                                        <label for="deleteBookButton" class="btn btn-danger">Удалить</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                </th>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="mb-5">
+        {{ render_pagination(pagination, request.endpoint, search_params) }}
+    </div>
+    {% if current_user.is_authenticated and current_user.can('create') %}
+    <a href="{{ url_for('books.new') }}" class="btn btn-primary">Добавить книгу</a>
+    {% endif %}
+</div>
+{% endblock %}

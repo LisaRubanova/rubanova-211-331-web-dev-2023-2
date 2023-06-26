@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="title-area position-relative" style="background-image: url({{ book.bg_image.url }});">
+    <div class="h-100 w-100 py-5 d-flex text-center position-absolute" style="background-color: rgba(0, 0, 0, 0.65);">
+        <div class="m-auto">
+            <h1 class="title mb-3 font-weight-bold">{{ book.name }}</h1>
+
+            <p class="mb-3 mx-auto">
+                <span>★</span> <span>{{ "%.2f" | format(book_rating) }}</span>
+                <span>|</span> <span>{{ reviews_count }}
+            </p>
+            <div class="container">
+                <p class="description w-75 mb-5 mx-auto"> {{ book.author }} </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <section class="about mb-5">
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">О книге</h2>
+        <p>Жанры: {{ genres_name }}</p>
+        <p>Год написания: {{ book.year }}</p>
+        <p>Число страниц: {{ book.pages }}</p>
+        <p>{{ book.description |safe}}</p>
+    </section>
+
+    {% if current_user.is_authenticated %}
+    {% if flag == False %}
+    <section class="add-review mb-5">
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">Оставить рецензию</h2>
+        <form method="post" action="{{ url_for('books.add_review', book_id=book.id) }}">
+            <input type="hidden" name="method" value="POST">
+            <label for="rating" class="form-label">Оценка</label>
+            <select class="form-select" id="rating" name="rating" required>
+                <option value="" selected disabled hidden>Выберите оценку</option>
+                <option value="5">Отлично</option>
+                <option value="4">Хорошо</option>
+                <option value="3">Удовлетворительно</option>
+                <option value="2">Неудовлетворительно</option>
+                <option value="1">Плохо</option>
+                <option value="0">Ужасно</option>
+            </select>
+            <div class="mb-3">
+                <label for="text" class="form-label">Текст рецензии</label>
+                <div class="">
+                    <textarea class="form-control" id="text_review" name="text_review" rows="5"></textarea>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var textarea = document.getElementById('text_review');
+                            var editor = new EasyMDE({ element: textarea });
+                        }); 
+                    </script>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Оставить рецензию на эту книгу</button>
+        </form>
+    </section>
+
+    {% elif flag == True %}
+    <section class="reviews mb-5">
+        <!-- <h2 class="mb-3 text-center text-uppercase font-weight-bold">Мой отзыв</h2> -->
+        {% for review in reviews_all %}
+        {% if review.user_id == current_user.id %}
+        <div class="card mb-3 border border-warning border-5">
+            <div class="card-body">
+                {% for user in users %}
+                {% if review.user_id == user.id %}
+                <h5 class="card-title mb-3">{{ user.first_name }} {{ user.last_name }}</h5>
+                {% endif %}
+                {% endfor %}
+
+                {% if review.rating == 0 %}
+                <p class="card-text">Оценка: Ужасно</p>
+                {% endif %}
+                {% if review.rating == 1 %}
+                <p class="card-text">Оценка: Плохо</p>
+                {% endif %}
+                {% if review.rating == 2 %}
+                <p class="card-text">Оценка: Неудовлетворительно</p>
+                {% endif %}
+                {% if review.rating == 3 %}
+                <p class="card-text">Оценка: Удовлетворительно</p>
+                {% endif %}
+                {% if review.rating == 4 %}
+                <p class="card-text">Оценка: Хорошо</p>
+                {% endif %}
+                {% if review.rating == 5 %}
+                <p class="card-text">Оценка: Отлично</p>
+                {% endif %}
+
+                <p class="card-text">Дата: {{ review.created_at }}</p>
+                <p class="card-text">{{ review.text |safe}}</p>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </section>
+    {% endif %}
+    {% endif %}
+
+    <section class="reviews mb-5">
+        <h2 class="mb-3 text-center text-uppercase font-weight-bold">Все рецензии на эту книгу</h2>
+        {% for review in reviews_lim5 %}
+        <div
+            class="card mb-3 {% if flag == True and review.user_id == current_user.id%} bg-secondary bg-opacity-10 {% endif %}">
+            <div class="card-body">
+                {% for user in users %}
+                {% if review.user_id == user.id %}
+                <h5 class="card-title mb-3">{{ user.first_name }} {{ user.last_name }}</h5>
+                {% endif %}
+                {% endfor %}
+                {% if review.rating == 0 %}
+                <p class="card-text">Оценка: Ужасно</p>
+                {% endif %}
+                {% if review.rating == 1 %}
+                <p class="card-text">Оценка: Плохо</p>
+                {% endif %}
+                {% if review.rating == 2 %}
+                <p class="card-text">Оценка: Неудовлетворительно</p>
+                {% endif %}
+                {% if review.rating == 3 %}
+                <p class="card-text">Оценка: Удовлетворительно</p>
+                {% endif %}
+                {% if review.rating == 4 %}
+                <p class="card-text">Оценка: Хорошо</p>
+                {% endif %}
+                {% if review.rating == 5 %}
+                <p class="card-text">Оценка: Отлично</p>
+                {% endif %}
+
+                <p class="card-text">Дата: {{ review.created_at }}</p>
+                <p class="card-text">{{ review.text }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        {% if reviews_lim5|length == 0 %}
+        <p class="text-center">Еще нет рецензий.</p>
+        {% endif %}
+    </section>
+
+    <div class="text-center mb-5">
+        <a href="{{ url_for('books.view_reviews', book_id=book.id) }}" class="btn btn-primary">Показать все отзывы</a>
+    </div>
+
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+{% endblock %}
